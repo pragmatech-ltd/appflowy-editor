@@ -31,6 +31,9 @@ class _DesktopSelectionServiceWidgetState
     extends State<DesktopSelectionServiceWidget>
     with WidgetsBindingObserver
     implements AppFlowySelectionService {
+  late final String _didChangeMetricsDebounceKey =
+      'didChangeMetrics - update selection ${identityHashCode(this)}';
+
   @override
   List<Rect> get selectionRects => editorState.selectionRects();
   final List<OverlayEntry> _selectionAreas = [];
@@ -79,7 +82,7 @@ class _DesktopSelectionServiceWidgetState
     // Need to refresh the selection when the metrics changed.
     if (currentSelection.value != null) {
       Debounce.debounce(
-        'didChangeMetrics - update selection ',
+        _didChangeMetricsDebounceKey,
         const Duration(milliseconds: 100),
         () {
           final selection = currentSelection.value;
@@ -94,6 +97,7 @@ class _DesktopSelectionServiceWidgetState
 
   @override
   void dispose() {
+    Debounce.cancel(_didChangeMetricsDebounceKey);
     clearSelection();
     _dropTargetEntry?.dispose();
     _dropTargetEntry = null;

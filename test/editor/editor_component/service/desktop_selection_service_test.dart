@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../test_helper.dart';
@@ -36,6 +37,37 @@ void main() {
 
         expect(tester.takeException(), isNull);
         expect(editorState.selectionService.currentSelection.value, isNull);
+      },
+    );
+
+    testWidgets(
+      'cancels metric debounce when the widget unmounts',
+      (tester) async {
+        final editorState = EditorState(document: Document.blank());
+
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+
+        tester.view.devicePixelRatio = 1.0;
+
+        await tester.buildAndPump(
+          AppFlowyEditor(
+            editorState: editorState,
+          ),
+        );
+
+        editorState.selectionService.updateSelection(
+          Selection.collapsed(Position(path: [0])),
+        );
+        await tester.pump();
+
+        tester.view.physicalSize = const Size(1600, 1200);
+        await tester.pump();
+
+        await tester.pumpWidget(const SizedBox.shrink());
+        await tester.pump(const Duration(milliseconds: 101));
+
+        expect(tester.takeException(), isNull);
       },
     );
   });
