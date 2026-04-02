@@ -140,15 +140,19 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
 
   @override
   Widget build(BuildContext context) {
-    Widget child = Stack(
-      children: [
-        _buildPlaceholderText(context),
-        _buildRichText(context),
-        ..._buildRichTextOverlay(context),
-      ],
-    );
+    Widget buildTextContent() {
+      Widget child = Stack(
+        children: [
+          _buildPlaceholderText(context),
+          _buildRichText(context),
+          ..._buildRichTextOverlay(context),
+        ],
+      );
 
-    if (enableAutoComplete) {
+      if (!enableAutoComplete) {
+        return child;
+      }
+
       final autoCompleteText = _buildAutoCompleteRichText();
       child = Stack(
         children: [
@@ -156,7 +160,18 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
           child,
         ],
       );
+
+      return child;
     }
+
+    final decorationListenable =
+        widget.editorState.editorStyle.textSpanDecoratorListenable;
+    final child = decorationListenable == null
+        ? buildTextContent()
+        : ListenableBuilder(
+            listenable: decorationListenable,
+            builder: (context, _) => buildTextContent(),
+          );
 
     return BlockSelectionContainer(
       delegate: widget.delegate,
@@ -565,7 +580,7 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
     required Iterable<TextInsert> textInserts,
   }) {
     int offset = 0;
-    List<InlineSpan> textSpans = [];
+    final textSpans = <InlineSpan>[];
     for (final textInsert in textInserts) {
       TextStyle textStyle = textStyleConfiguration.text.copyWith(
         height: textStyleConfiguration.lineHeight,

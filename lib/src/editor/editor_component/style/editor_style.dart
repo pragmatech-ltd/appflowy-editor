@@ -15,6 +15,7 @@ class EditorStyle {
     required this.textStyleConfiguration,
     required this.textSpanDecorator,
     this.textSpanOverlayBuilder,
+    this.textSpanDecoratorListenable,
     this.magnifierSize = const Size(72, 48),
     this.mobileDragHandleBallSize = const Size(8, 8),
     this.mobileDragHandleWidth = 2.0,
@@ -68,6 +69,9 @@ class EditorStyle {
   /// Customize the text span overlay builder.
   final AppFlowyTextSpanOverlayBuilder? textSpanOverlayBuilder;
 
+  /// Triggers repaints when external text-decoration state changes.
+  final Listenable? textSpanDecoratorListenable;
+
   final String? defaultTextDirection;
 
   // The size of the magnifier.
@@ -112,6 +116,7 @@ class EditorStyle {
     TextStyleConfiguration? textStyleConfiguration,
     TextSpanDecoratorForAttribute? textSpanDecorator,
     this.textSpanOverlayBuilder,
+    this.textSpanDecoratorListenable,
     this.defaultTextDirection,
     this.cursorWidth = 2.0,
     this.textScaleFactor = 1.0,
@@ -145,6 +150,7 @@ class EditorStyle {
     TextStyleConfiguration? textStyleConfiguration,
     TextSpanDecoratorForAttribute? textSpanDecorator,
     this.textSpanOverlayBuilder,
+    this.textSpanDecoratorListenable,
     this.defaultTextDirection,
     this.magnifierSize = const Size(72, 48),
     this.mobileDragHandleBallSize = const Size(8, 8),
@@ -178,6 +184,7 @@ class EditorStyle {
     TextStyleConfiguration? textStyleConfiguration,
     TextSpanDecoratorForAttribute? textSpanDecorator,
     AppFlowyTextSpanOverlayBuilder? textSpanOverlayBuilder,
+    Listenable? textSpanDecoratorListenable,
     String? defaultTextDirection,
     Size? magnifierSize,
     Size? mobileDragHandleBallSize,
@@ -202,6 +209,8 @@ class EditorStyle {
       textSpanDecorator: textSpanDecorator ?? this.textSpanDecorator,
       textSpanOverlayBuilder:
           textSpanOverlayBuilder ?? this.textSpanOverlayBuilder,
+      textSpanDecoratorListenable:
+          textSpanDecoratorListenable ?? this.textSpanDecoratorListenable,
       defaultTextDirection: defaultTextDirection,
       magnifierSize: magnifierSize ?? this.magnifierSize,
       mobileDragHandleBallSize:
