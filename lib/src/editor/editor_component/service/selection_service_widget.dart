@@ -63,6 +63,8 @@ class _SelectionServiceWidgetState extends State<SelectionServiceWidget>
       selectionColor: widget.selectionColor,
       showMagnifier: widget.showMagnifier,
       magnifierSize: editorState.editorStyle.magnifierSize,
+      magnifierFocalPointOffsetFromBottom:
+          editorState.editorStyle.magnifierFocalPointOffsetFromBottom,
       child: widget.child,
     );
   }

@@ -5,15 +5,24 @@ class MobileMagnifier extends StatelessWidget {
     super.key,
     required this.size,
     required this.offset,
+    this.focalPointOffsetFromBottom = 22.0,
   });
 
   final Size size;
   final Offset offset;
+  final double focalPointOffsetFromBottom;
 
   @override
   Widget build(BuildContext context) {
+    final clampedFocalPointOffsetFromBottom = focalPointOffsetFromBottom.clamp(
+      0.0,
+      size.height,
+    );
     // the magnifier will blink if the center is the same as the offset.
-    final magicOffset = Offset(0, size.height - 22);
+    final magicOffset = Offset(
+      0,
+      size.height - clampedFocalPointOffsetFromBottom,
+    );
 
     return Positioned.fromRect(
       rect: Rect.fromCenter(

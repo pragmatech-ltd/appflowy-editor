@@ -17,6 +17,7 @@ class EditorStyle {
     this.textSpanOverlayBuilder,
     this.textSpanDecoratorListenable,
     this.magnifierSize = const Size(72, 48),
+    this.magnifierFocalPointOffsetFromBottom = 22.0,
     this.mobileDragHandleBallSize = const Size(8, 8),
     this.mobileDragHandleWidth = 2.0,
     this.cursorWidth = 2.0,
@@ -78,6 +79,12 @@ class EditorStyle {
   // Only works on mobile.
   final Size magnifierSize;
 
+  /// Distance from the bottom edge of the magnifier lens to the focused point.
+  ///
+  /// Smaller values move the magnifier farther above the user's finger.
+  /// Only works on mobile.
+  final double magnifierFocalPointOffsetFromBottom;
+
   // mobile drag handler size.
   // Only works on mobile.
   final Size mobileDragHandleBallSize;
@@ -132,6 +139,7 @@ class EditorStyle {
         textSpanDecorator =
             textSpanDecorator ?? defaultTextSpanDecoratorForAttribute,
         magnifierSize = Size.zero,
+        magnifierFocalPointOffsetFromBottom = 22.0,
         mobileDragHandleBallSize = Size.zero,
         mobileDragHandleWidth = 0.0,
         enableHapticFeedbackOnAndroid = false,
@@ -153,6 +161,7 @@ class EditorStyle {
     this.textSpanDecoratorListenable,
     this.defaultTextDirection,
     this.magnifierSize = const Size(72, 48),
+    this.magnifierFocalPointOffsetFromBottom = 22.0,
     this.mobileDragHandleBallSize = const Size(8, 8),
     this.mobileDragHandleWidth = 2.0,
     this.cursorWidth = 2.0,
@@ -187,6 +196,7 @@ class EditorStyle {
     Listenable? textSpanDecoratorListenable,
     String? defaultTextDirection,
     Size? magnifierSize,
+    double? magnifierFocalPointOffsetFromBottom,
     Size? mobileDragHandleBallSize,
     double? mobileDragHandleWidth,
     bool? enableHapticFeedbackOnAndroid,
@@ -213,6 +223,9 @@ class EditorStyle {
           textSpanDecoratorListenable ?? this.textSpanDecoratorListenable,
       defaultTextDirection: defaultTextDirection,
       magnifierSize: magnifierSize ?? this.magnifierSize,
+      magnifierFocalPointOffsetFromBottom:
+          magnifierFocalPointOffsetFromBottom ??
+              this.magnifierFocalPointOffsetFromBottom,
       mobileDragHandleBallSize:
           mobileDragHandleBallSize ?? this.mobileDragHandleBallSize,
       mobileDragHandleWidth:

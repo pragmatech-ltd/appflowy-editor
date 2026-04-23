@@ -43,6 +43,7 @@ class MobileSelectionServiceWidget extends StatefulWidget {
     this.selectionColor = const Color.fromARGB(53, 111, 201, 231),
     this.showMagnifier = true,
     this.magnifierSize = const Size(72, 48),
+    this.magnifierFocalPointOffsetFromBottom = 22.0,
     required this.child,
   });
 
@@ -56,6 +57,7 @@ class MobileSelectionServiceWidget extends StatefulWidget {
   final bool showMagnifier;
 
   final Size magnifierSize;
+  final double magnifierFocalPointOffsetFromBottom;
 
   @override
   State<MobileSelectionServiceWidget> createState() =>
@@ -181,6 +183,8 @@ class _MobileSelectionServiceWidgetState
         return MobileMagnifier(
           size: widget.magnifierSize,
           offset: local,
+          focalPointOffsetFromBottom:
+              widget.magnifierFocalPointOffsetFromBottom,
         );
       },
     );

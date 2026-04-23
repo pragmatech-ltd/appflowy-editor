@@ -7,6 +7,7 @@ void main() {
     test('EditorStyle.mobile', () {
       const mobileStyle = EditorStyle.mobile(selectionColor: Colors.blue);
       expect(mobileStyle.selectionColor, Colors.blue);
+      expect(mobileStyle.magnifierFocalPointOffsetFromBottom, 22.0);
     });
 
     test('EditorStyle.desktop', () {
@@ -43,10 +44,12 @@ void main() {
         cursorColor: cursorColor,
         selectionColor: selectionColor,
         textStyleConfiguration: textStyleConfiguration,
+        magnifierFocalPointOffsetFromBottom: 8,
       );
       expect(newStyle.padding, padding);
       expect(newStyle.cursorColor, cursorColor);
       expect(newStyle.selectionColor, selectionColor);
+      expect(newStyle.magnifierFocalPointOffsetFromBottom, 8);
       expect(
         newStyle.textStyleConfiguration,
         textStyleConfiguration,
