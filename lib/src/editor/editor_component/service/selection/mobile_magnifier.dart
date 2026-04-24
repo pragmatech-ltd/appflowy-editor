@@ -6,11 +6,13 @@ class MobileMagnifier extends StatelessWidget {
     required this.size,
     required this.offset,
     this.focalPointOffsetFromBottom = 22.0,
+    this.borderSide = BorderSide.none,
   });
 
   final Size size;
   final Offset offset;
   final double focalPointOffsetFromBottom;
+  final BorderSide borderSide;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +36,7 @@ class MobileMagnifier extends StatelessWidget {
         child: _CustomMagnifier(
           size: size,
           additionalFocalPointOffset: magicOffset,
+          borderSide: borderSide,
         ),
       ),
     );
@@ -43,20 +46,23 @@ class MobileMagnifier extends StatelessWidget {
 class _CustomMagnifier extends StatelessWidget {
   const _CustomMagnifier({
     this.additionalFocalPointOffset = Offset.zero,
+    this.borderSide = BorderSide.none,
     required this.size,
   });
 
   final Size size;
   final Offset additionalFocalPointOffset;
+  final BorderSide borderSide;
 
   @override
   Widget build(BuildContext context) {
     return RawMagnifier(
-      decoration: const MagnifierDecoration(
+      decoration: MagnifierDecoration(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(40)),
+          borderRadius: const BorderRadius.all(Radius.circular(40)),
+          side: borderSide,
         ),
-        shadows: <BoxShadow>[
+        shadows: const <BoxShadow>[
           BoxShadow(
             blurRadius: 1.5,
             offset: Offset(0, 2),

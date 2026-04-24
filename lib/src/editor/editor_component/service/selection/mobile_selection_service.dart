@@ -44,6 +44,7 @@ class MobileSelectionServiceWidget extends StatefulWidget {
     this.showMagnifier = true,
     this.magnifierSize = const Size(72, 48),
     this.magnifierFocalPointOffsetFromBottom = 22.0,
+    this.magnifierBorderSide = BorderSide.none,
     required this.child,
   });
 
@@ -58,6 +59,7 @@ class MobileSelectionServiceWidget extends StatefulWidget {
 
   final Size magnifierSize;
   final double magnifierFocalPointOffsetFromBottom;
+  final BorderSide magnifierBorderSide;
 
   @override
   State<MobileSelectionServiceWidget> createState() =>
@@ -185,6 +187,7 @@ class _MobileSelectionServiceWidgetState
           offset: local,
           focalPointOffsetFromBottom:
               widget.magnifierFocalPointOffsetFromBottom,
+          borderSide: widget.magnifierBorderSide,
         );
       },
     );

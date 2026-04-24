@@ -18,6 +18,7 @@ class EditorStyle {
     this.textSpanDecoratorListenable,
     this.magnifierSize = const Size(72, 48),
     this.magnifierFocalPointOffsetFromBottom = 22.0,
+    this.magnifierBorderSide = BorderSide.none,
     this.mobileDragHandleBallSize = const Size(8, 8),
     this.mobileDragHandleWidth = 2.0,
     this.cursorWidth = 2.0,
@@ -85,6 +86,11 @@ class EditorStyle {
   /// Only works on mobile.
   final double magnifierFocalPointOffsetFromBottom;
 
+  /// Border drawn around the mobile magnifier lens.
+  ///
+  /// Only works on mobile.
+  final BorderSide magnifierBorderSide;
+
   // mobile drag handler size.
   // Only works on mobile.
   final Size mobileDragHandleBallSize;
@@ -140,6 +146,7 @@ class EditorStyle {
             textSpanDecorator ?? defaultTextSpanDecoratorForAttribute,
         magnifierSize = Size.zero,
         magnifierFocalPointOffsetFromBottom = 22.0,
+        magnifierBorderSide = BorderSide.none,
         mobileDragHandleBallSize = Size.zero,
         mobileDragHandleWidth = 0.0,
         enableHapticFeedbackOnAndroid = false,
@@ -162,6 +169,7 @@ class EditorStyle {
     this.defaultTextDirection,
     this.magnifierSize = const Size(72, 48),
     this.magnifierFocalPointOffsetFromBottom = 22.0,
+    this.magnifierBorderSide = BorderSide.none,
     this.mobileDragHandleBallSize = const Size(8, 8),
     this.mobileDragHandleWidth = 2.0,
     this.cursorWidth = 2.0,
@@ -197,6 +205,7 @@ class EditorStyle {
     String? defaultTextDirection,
     Size? magnifierSize,
     double? magnifierFocalPointOffsetFromBottom,
+    BorderSide? magnifierBorderSide,
     Size? mobileDragHandleBallSize,
     double? mobileDragHandleWidth,
     bool? enableHapticFeedbackOnAndroid,
@@ -226,6 +235,7 @@ class EditorStyle {
       magnifierFocalPointOffsetFromBottom:
           magnifierFocalPointOffsetFromBottom ??
               this.magnifierFocalPointOffsetFromBottom,
+      magnifierBorderSide: magnifierBorderSide ?? this.magnifierBorderSide,
       mobileDragHandleBallSize:
           mobileDragHandleBallSize ?? this.mobileDragHandleBallSize,
       mobileDragHandleWidth:
