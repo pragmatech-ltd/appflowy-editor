@@ -36,6 +36,25 @@ const String selectionDragModeKey = 'selection_drag_mode';
 bool disableIOSSelectWordEdgeOnTap = false;
 bool disableMagnifier = false;
 
+Map<String, Object?> _mobileSelectionExtraInfo(
+  EditorState editorState, {
+  required bool doNotAttachTextService,
+  MobileSelectionDragMode? dragMode,
+  bool disableFloatingToolbar = false,
+}) {
+  final previousExtraInfo = editorState.selectionExtraInfo;
+  final mobileToolbarHidden =
+      previousExtraInfo?[selectionExtraInfoDisableMobileToolbarKey] == true;
+
+  return {
+    if (dragMode != null) selectionDragModeKey: dragMode,
+    selectionExtraInfoDoNotAttachTextService:
+        mobileToolbarHidden || doNotAttachTextService,
+    if (mobileToolbarHidden) selectionExtraInfoDisableMobileToolbarKey: true,
+    if (disableFloatingToolbar) selectionExtraInfoDisableFloatingToolbar: true,
+  };
+}
+
 class MobileSelectionServiceWidget extends StatefulWidget {
   const MobileSelectionServiceWidget({
     super.key,
@@ -383,11 +402,11 @@ class _MobileSelectionServiceWidgetState
       selection,
       reason: SelectionUpdateReason.uiEvent,
       customSelectionType: SelectionType.inline,
-      extraInfo: {
-        selectionDragModeKey: dragMode,
-        selectionExtraInfoDoNotAttachTextService:
-            dragMode == MobileSelectionDragMode.cursor,
-      },
+      extraInfo: _mobileSelectionExtraInfo(
+        editorState,
+        doNotAttachTextService: dragMode == MobileSelectionDragMode.cursor,
+        dragMode: dragMode,
+      ),
     );
   }
 
@@ -630,9 +649,10 @@ class _MobileSelectionServiceWidgetState
     editorState.updateSelectionWithReason(
       editorState.selection,
       reason: SelectionUpdateReason.uiEvent,
-      extraInfo: {
-        selectionExtraInfoDoNotAttachTextService: false,
-      },
+      extraInfo: _mobileSelectionExtraInfo(
+        editorState,
+        doNotAttachTextService: false,
+      ),
     );
   }
 
@@ -744,9 +764,10 @@ class _MobileSelectionServiceWidgetState
       editorState.selection,
       reason: SelectionUpdateReason.uiEvent,
       customSelectionType: SelectionType.inline,
-      extraInfo: {
-        selectionExtraInfoDoNotAttachTextService: false,
-      },
+      extraInfo: _mobileSelectionExtraInfo(
+        editorState,
+        doNotAttachTextService: false,
+      ),
     );
   }
 
@@ -793,10 +814,12 @@ class _MobileSelectionServiceWidgetState
     editorState.updateSelectionWithReason(
       selection,
       reason: SelectionUpdateReason.uiEvent,
-      extraInfo: {
-        selectionDragModeKey: dragMode,
-        selectionExtraInfoDisableFloatingToolbar: true,
-      },
+      extraInfo: _mobileSelectionExtraInfo(
+        editorState,
+        doNotAttachTextService: false,
+        dragMode: dragMode,
+        disableFloatingToolbar: true,
+      ),
     );
   }
 
@@ -842,10 +865,12 @@ class _MobileSelectionServiceWidgetState
       editorState.updateSelectionWithReason(
         newSelection,
         reason: SelectionUpdateReason.uiEvent,
-        extraInfo: {
-          selectionDragModeKey: dragMode,
-          selectionExtraInfoDisableFloatingToolbar: true,
-        },
+        extraInfo: _mobileSelectionExtraInfo(
+          editorState,
+          doNotAttachTextService: false,
+          dragMode: dragMode,
+          disableFloatingToolbar: true,
+        ),
       );
     }
   }
@@ -857,9 +882,10 @@ class _MobileSelectionServiceWidgetState
     editorState.updateSelectionWithReason(
       editorState.selection,
       reason: SelectionUpdateReason.uiEvent,
-      extraInfo: {
-        selectionExtraInfoDoNotAttachTextService: false,
-      },
+      extraInfo: _mobileSelectionExtraInfo(
+        editorState,
+        doNotAttachTextService: false,
+      ),
     );
   }
 
@@ -907,10 +933,11 @@ class _MobileSelectionServiceWidgetState
     editorState.updateSelectionWithReason(
       editorState.selection,
       reason: SelectionUpdateReason.uiEvent,
-      extraInfo: {
-        selectionExtraInfoDoNotAttachTextService: false,
-        selectionExtraInfoDisableFloatingToolbar: true,
-      },
+      extraInfo: _mobileSelectionExtraInfo(
+        editorState,
+        doNotAttachTextService: false,
+        disableFloatingToolbar: true,
+      ),
     );
   }
 

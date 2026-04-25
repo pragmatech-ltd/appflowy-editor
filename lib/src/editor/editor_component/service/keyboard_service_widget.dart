@@ -58,6 +58,13 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
       key: 'keyboard',
       canTap: (details) {
         enableIMEShortcuts = true;
+        if (_isTextInputAttachSuppressed) {
+          editorState.selectionExtraInfo = {
+            ...?editorState.selectionExtraInfo,
+            selectionExtraInfoDisableMobileToolbarKey: false,
+            selectionExtraInfoDoNotAttachTextService: false,
+          };
+        }
         focusNode.requestFocus();
         textInputService.close();
 
@@ -100,6 +107,10 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
 
   @override
   void enable() {
+    if (_isTextInputAttachSuppressed) {
+      textInputService.close();
+      return;
+    }
     focusNode.requestFocus();
   }
 
@@ -122,6 +133,10 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   // Used in mobile only
   @override
   void enableKeyBoard(Selection selection) {
+    if (_isTextInputAttachSuppressed) {
+      textInputService.close();
+      return;
+    }
     _attachTextInputService(selection);
   }
 
@@ -203,9 +218,10 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   }
 
   void _onSelectionChanged() {
-    final doNotAttach = editorState
-        .selectionExtraInfo?[selectionExtraInfoDoNotAttachTextService];
-    if (doNotAttach == true) {
+    if (_isTextInputAttachSuppressed) {
+      textInputService.close();
+      enableIMEShortcuts = true;
+      previousSelection = editorState.selection;
       return;
     }
 
@@ -235,6 +251,12 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
   }
 
   void _attachTextInputService(Selection selection) {
+    if (_isTextInputAttachSuppressed) {
+      textInputService.close();
+      enableIMEShortcuts = true;
+      return;
+    }
+
     final textEditingValue = _getCurrentTextEditingValue(selection);
     AppFlowyEditorLog.editor.debug(
       'keyboard service - attach text input service: $textEditingValue',
@@ -258,6 +280,12 @@ class KeyboardServiceWidgetState extends State<KeyboardServiceWidget>
     } else {
       enableIMEShortcuts = true;
     }
+  }
+
+  bool get _isTextInputAttachSuppressed {
+    final extraInfo = editorState.selectionExtraInfo;
+    return extraInfo?[selectionExtraInfoDoNotAttachTextService] == true ||
+        extraInfo?[selectionExtraInfoDisableMobileToolbarKey] == true;
   }
 
   // This function is used to get the current text editing value of the editor
