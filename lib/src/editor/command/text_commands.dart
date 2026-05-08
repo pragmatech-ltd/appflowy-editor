@@ -33,13 +33,16 @@ extension TextTransforms on EditorState {
     final next = position.path.next;
     final children = node.children;
     final delta = node.delta;
+    final offset = delta == null
+        ? position.offset
+        : position.offset.clamp(0, delta.length).toInt();
 
     if (delta != null) {
       // Delete the text after the cursor in the current node.
       transaction.deleteText(
         node,
-        position.offset,
-        delta.length - position.offset,
+        offset,
+        delta.length - offset,
       );
     }
 
@@ -48,7 +51,7 @@ extension TextTransforms on EditorState {
       transaction.deleteNodes(children);
     }
 
-    final slicedDelta = delta == null ? Delta() : delta.slice(position.offset);
+    final slicedDelta = delta == null ? Delta() : delta.slice(offset);
     final Map<String, dynamic> attributes = {
       'delta': slicedDelta.toJson(),
     };
