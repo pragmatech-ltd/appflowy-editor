@@ -240,7 +240,7 @@ class EditorScrollController {
     }
 
     final documentChildCount = editorState.document.root.children.length;
-    final headerOffset = editorState.showHeader ? 1 : 0;
+    final headerOffset = 0;// editorState.showHeader ? 1 : 0;
     final visibleDocumentIndexes = positions
         .where(
           (ItemPosition position) =>
