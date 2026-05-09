@@ -86,13 +86,18 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
   void _onSelectionChanged() {
     // should auto scroll after the cursor or selection updated.
     final selection = editorState.selection;
+    final selectionUpdateReason = editorState.selectionUpdateReason;
     if (selection == null ||
-        [SelectionUpdateReason.selectAll]
-            .contains(editorState.selectionUpdateReason)) {
+        [SelectionUpdateReason.selectAll].contains(selectionUpdateReason)) {
       return;
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (editorState.selection != selection ||
+          editorState.selectionUpdateReason != selectionUpdateReason) {
+        return;
+      }
+
       final selectionRects = editorState.selectionRects();
       if (selectionRects.isEmpty) {
         return;
@@ -171,6 +176,10 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
 
         Future.delayed(keyboardDelay, () {
           if (_forwardKey.currentContext == null) {
+            return;
+          }
+          if (editorState.selection != selection ||
+              editorState.selectionUpdateReason != selectionUpdateReason) {
             return;
           }
           // Mobile needs to continuously update scroll position/direction during drag

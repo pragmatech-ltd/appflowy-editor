@@ -239,38 +239,32 @@ class EditorScrollController {
       return;
     }
 
-    // Determine the first visible item by finding the item with the
-    // smallest trailing edge that is greater than 0.  i.e. the first
-    // item whose trailing edge in visible in the viewport.
-    int min = positions
-        .where((ItemPosition position) => position.itemTrailingEdge > 0)
-        .reduce(
-          (ItemPosition min, ItemPosition position) =>
-              position.itemTrailingEdge < min.itemTrailingEdge ? position : min,
+    final documentChildCount = editorState.document.root.children.length;
+    final headerOffset = editorState.showHeader ? 1 : 0;
+    final visibleDocumentIndexes = positions
+        .where(
+          (ItemPosition position) =>
+              position.itemTrailingEdge > 0 && position.itemLeadingEdge < 1,
         )
-        .index;
-    // Determine the last visible item by finding the item with the
-    // greatest leading edge that is less than 1.  i.e. the last
-    // item whose leading edge in visible in the viewport.
-    int max = positions
-        .where((ItemPosition position) => position.itemLeadingEdge < 1)
-        .reduce(
-          (ItemPosition max, ItemPosition position) =>
-              position.itemLeadingEdge > max.itemLeadingEdge ? position : max,
-        )
-        .index;
+        .map((ItemPosition position) => position.index - headerOffset)
+        .where((int index) => index >= 0 && index < documentChildCount)
+        .toList(growable: false);
 
-    // filter the header and footer
-    if (editorState.showHeader) {
-      max--;
+    if (visibleDocumentIndexes.isEmpty) {
+      visibleRangeNotifier.value = (-1, -1);
+      return;
     }
 
-    if (editorState.showFooter &&
-        max >= editorState.document.root.children.length) {
-      max--;
+    var min = visibleDocumentIndexes.first;
+    var max = visibleDocumentIndexes.first;
+    for (final index in visibleDocumentIndexes.skip(1)) {
+      if (index < min) {
+        min = index;
+      }
+      if (index > max) {
+        max = index;
+      }
     }
-
-    // notify the listeners
 
     visibleRangeNotifier.value = (min, max);
   }
