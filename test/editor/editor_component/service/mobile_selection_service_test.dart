@@ -84,7 +84,7 @@ void main() {
       );
 
       final magnifier = tester.widget<RawMagnifier>(find.byType(RawMagnifier));
-      final decoration = magnifier.decoration as MagnifierDecoration;
+      final decoration = magnifier.decoration;
       final shape = decoration.shape as RoundedRectangleBorder;
 
       expect(shape.side.color, const Color.fromARGB(92, 255, 255, 255));

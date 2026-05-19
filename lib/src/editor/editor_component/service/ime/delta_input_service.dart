@@ -123,6 +123,9 @@ class DeltaTextInputService extends TextInputService with DeltaTextInputClient {
   void showAutocorrectionPromptRect(int start, int end) {}
 
   @override
+  bool onFocusReceived() => false;
+
+  @override
   void showToolbar() {}
 
   @override

@@ -104,7 +104,7 @@ class PositionedList extends StatefulWidget {
   /// See [ScrollView.physics].
   final ScrollPhysics? physics;
 
-  /// {@macro flutter.widgets.scrollable.cacheExtent}
+  /// The number of pixels to cache before and after the visible scroll area.
   final double? cacheExtent;
 
   /// The number of children that will contribute semantic information.

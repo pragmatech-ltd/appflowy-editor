@@ -22,7 +22,7 @@ class UnboundedViewport extends Viewport {
     double anchor = 0.0,
     required super.offset,
     super.center,
-    super.cacheExtent,
+    super.scrollCacheExtent,
     super.slivers,
   }) : _anchor = anchor;
 
@@ -41,7 +41,7 @@ class UnboundedViewport extends Viewport {
           Viewport.getDefaultCrossAxisDirection(context, axisDirection),
       anchor: anchor,
       offset: offset,
-      cacheExtent: cacheExtent,
+      scrollCacheExtent: scrollCacheExtent,
     );
   }
 }
@@ -63,7 +63,7 @@ class UnboundedRenderViewport extends RenderViewport {
     double anchor = 0.0,
     super.children,
     super.center,
-    super.cacheExtent,
+    super.scrollCacheExtent,
   }) : _anchor = anchor;
 
   static const int _maxLayoutCycles = 10;
@@ -75,7 +75,7 @@ class UnboundedRenderViewport extends RenderViewport {
   late double _maxScrollExtent;
   bool _hasVisualOverflow = false;
 
-  /// This value is set during layout based on the [CacheExtentStyle].
+  /// This value is set during layout based on the [ScrollCacheExtent].
   ///
   /// When the style is [CacheExtentStyle.viewport], it is the main axis extent
   /// of the viewport multiplied by the requested cache extent, which is still
@@ -235,15 +235,10 @@ class UnboundedRenderViewport extends RenderViewport {
     final double forwardDirectionRemainingPaintExtent =
         (mainAxisExtent - centerOffset).clamp(0.0, mainAxisExtent);
 
-    switch (cacheExtentStyle) {
-      case CacheExtentStyle.pixel:
-        _calculatedCacheExtent = cacheExtent;
-        break;
-
-      case CacheExtentStyle.viewport:
-        _calculatedCacheExtent = mainAxisExtent * cacheExtent!;
-        break;
-    }
+    _calculatedCacheExtent = switch (scrollCacheExtent.style) {
+      CacheExtentStyle.pixel => scrollCacheExtent.value,
+      CacheExtentStyle.viewport => mainAxisExtent * scrollCacheExtent.value,
+    };
 
     final double fullCacheExtent = mainAxisExtent + 2 * _calculatedCacheExtent!;
     final double centerCacheOffset = centerOffset + _calculatedCacheExtent!;
