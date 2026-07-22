@@ -336,16 +336,16 @@ class _UploadImageMenuState extends State<UploadImageMenu> {
               allowMultiple: false,
               type: kIsWeb ? fp.FileType.custom : fp.FileType.image,
               allowedExtensions: kIsWeb ? allowedExtensions : null,
-              withData: kIsWeb,
             );
             if (result != null && result.files.isNotEmpty) {
+              final file = result.files.first;
+              final imagePathOrContent =
+                  kIsWeb ? base64String(await file.readAsBytes()) : file.path;
+              if (!mounted) {
+                return;
+              }
               setState(() {
-                final bytes = result.files.first.bytes;
-                if (kIsWeb && bytes != null) {
-                  _imagePathOrContent = base64String(bytes);
-                } else {
-                  _imagePathOrContent = result.files.first.path;
-                }
+                _imagePathOrContent = imagePathOrContent;
               });
             }
           },

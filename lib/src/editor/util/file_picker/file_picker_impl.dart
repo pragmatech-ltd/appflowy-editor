@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:appflowy_editor/src/editor/util/file_picker/file_picker_service.dart';
 import 'package:file_picker/file_picker.dart' as fp;
 
@@ -15,32 +17,44 @@ class FilePicker implements FilePickerService {
     List<String>? allowedExtensions,
     Function(fp.FilePickerStatus p1)? onFileLoading,
     bool allowMultiple = false,
-    bool withData = false,
-    bool withReadStream = false,
     bool lockParentWindow = false,
   }) async {
-    final result = await fp.FilePicker.pickFiles(
-      dialogTitle: dialogTitle,
-      initialDirectory: initialDirectory,
-      type: type,
-      allowedExtensions: allowedExtensions,
-      onFileLoading: onFileLoading,
-      allowMultiple: allowMultiple,
-      withData: withData,
-      withReadStream: withReadStream,
-      lockParentWindow: lockParentWindow,
-    );
+    final files = <fp.PlatformFile>[];
+    if (allowMultiple) {
+      final result = await fp.FilePicker.pickFiles(
+        dialogTitle: dialogTitle,
+        initialDirectory: initialDirectory,
+        type: type,
+        allowedExtensions: allowedExtensions,
+        onFileLoading: onFileLoading,
+        lockParentWindow: lockParentWindow,
+      );
+      files.addAll(result?.files ?? const []);
+    } else {
+      final file = await fp.FilePicker.pickFile(
+        dialogTitle: dialogTitle,
+        initialDirectory: initialDirectory,
+        type: type,
+        allowedExtensions: allowedExtensions,
+        onFileLoading: onFileLoading,
+        lockParentWindow: lockParentWindow,
+      );
+      if (file != null) {
+        files.add(file);
+      }
+    }
 
-    return FilePickerResult(result?.files ?? []);
+    return FilePickerResult(files);
   }
 
   @override
   Future<String?> saveFile({
     String? dialogTitle,
-    String? fileName,
+    required String fileName,
     String? initialDirectory,
     fp.FileType type = fp.FileType.any,
     List<String>? allowedExtensions,
+    required Uint8List bytes,
     bool lockParentWindow = false,
   }) {
     return fp.FilePicker.saveFile(
@@ -49,6 +63,7 @@ class FilePicker implements FilePickerService {
       initialDirectory: initialDirectory,
       type: type,
       allowedExtensions: allowedExtensions,
+      bytes: bytes,
       lockParentWindow: lockParentWindow,
     );
   }

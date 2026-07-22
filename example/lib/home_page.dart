@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io' if (dart.library.html) 'package:example/file_io_stub.dart';
 import 'dart:math';
-
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:example/pages/animated_markdown_page.dart';
 import 'package:example/pages/auto_complete_editor.dart';
@@ -416,22 +415,24 @@ class _HomePageState extends State<HomePage> {
       }
     } else {
       // for desktop
+      final Uint8List bytes;
+      if (fileType == ExportFileType.pdf) {
+        final pdf = await PdfHTMLEncoder(
+          fontFallback: [
+            await PdfGoogleFonts.notoColorEmoji(),
+            await PdfGoogleFonts.notoColorEmojiRegular(),
+          ],
+        ).convert(result);
+        bytes = await pdf.save();
+      } else {
+        bytes = Uint8List.fromList(utf8.encode(result));
+      }
+
       final path = await FilePicker.saveFile(
         fileName: 'document.${fileType.extension}',
+        bytes: bytes,
       );
       if (path != null) {
-        await File(path).writeAsString(result);
-        if (fileType == ExportFileType.pdf) {
-          final pdf = await PdfHTMLEncoder(
-            fontFallback: [
-              await PdfGoogleFonts.notoColorEmoji(),
-              await PdfGoogleFonts.notoColorEmojiRegular(),
-            ],
-          ).convert(result);
-
-          await File(path).writeAsBytes(await pdf.save());
-        }
-
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -444,25 +445,16 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _importFile(ExportFileType fileType) async {
-    final result = await FilePicker.pickFiles(
-      allowMultiple: false,
+    final file = await FilePicker.pickFile(
       allowedExtensions: [fileType.extension],
       type: FileType.custom,
     );
-    var plainText = '';
-    if (!kIsWeb) {
-      final path = result?.files.single.path;
-      if (path == null) {
-        return;
-      }
-      plainText = await File(path).readAsString();
-    } else {
-      final bytes = result?.files.first.bytes;
-      if (bytes == null) {
-        return;
-      }
-      plainText = const Utf8Decoder().convert(bytes);
+    if (file == null) {
+      return;
     }
+    final plainText = const Utf8Decoder().convert(
+      await file.readAsBytes(),
+    );
 
     var jsonString = '';
     switch (fileType) {
