@@ -27,9 +27,10 @@ class FilePicker implements FilePickerService {
         type: type,
         allowedExtensions: allowedExtensions,
         onFileLoading: onFileLoading,
-        lockParentWindow: lockParentWindow,
+        windowsOptions: fp.WindowsOptions(lockParentWindow: lockParentWindow),
+        linuxOptions: fp.LinuxOptions(lockParentWindow: lockParentWindow),
       );
-      files.addAll(result?.files ?? const []);
+      files.addAll(result);
     } else {
       final file = await fp.FilePicker.pickFile(
         dialogTitle: dialogTitle,
@@ -37,7 +38,8 @@ class FilePicker implements FilePickerService {
         type: type,
         allowedExtensions: allowedExtensions,
         onFileLoading: onFileLoading,
-        lockParentWindow: lockParentWindow,
+        windowsOptions: fp.WindowsOptions(lockParentWindow: lockParentWindow),
+        linuxOptions: fp.LinuxOptions(lockParentWindow: lockParentWindow),
       );
       if (file != null) {
         files.add(file);
@@ -56,15 +58,19 @@ class FilePicker implements FilePickerService {
     List<String>? allowedExtensions,
     required Uint8List bytes,
     bool lockParentWindow = false,
-  }) {
-    return fp.FilePicker.saveFile(
+  }) async {
+    final uri = await fp.FilePicker.saveFile(
       dialogTitle: dialogTitle,
       fileName: fileName,
       initialDirectory: initialDirectory,
       type: type,
       allowedExtensions: allowedExtensions,
       bytes: bytes,
-      lockParentWindow: lockParentWindow,
+      windowsOptions: fp.WindowsOptions(lockParentWindow: lockParentWindow),
+      linuxOptions: fp.LinuxOptions(lockParentWindow: lockParentWindow),
     );
+    return uri == null
+        ? null
+        : (uri.scheme == 'file' ? uri.toFilePath() : uri.toString());
   }
 }
